@@ -32,14 +32,14 @@ enum Unit {
 /** A singlton EventLoop that provides a scheduler */
 class EventLoop {
   private:
-    template <typename T> struct Event {
-      T _function; // The function to be ran
+    struct Task {
+      void (*_function)(); // The function to be ran
       bool _repeat; // Should this event be looped
       unsigned long _created; // the time in millis when the event was created
       unsigned long _delay; // the dealy what will be muliplied with Unit
       Unit _unit; // The unit of time to schedule the event with
       /** Grab the current time of when the event was created */
-      inline Event() {
+      inline Task() {
         _created = millis();
       };
       /** Caculate the time to execute of there is a delay */
@@ -47,11 +47,10 @@ class EventLoop {
         return _created + _delay * _unit;
       };
     };
-    typedef Event<void (*)()> Task; // Simplify Event pointer function
     LinkedQueue<Task> _queue;
     inline EventLoop() {}; // Disable constructing of the EventLoop
     /** Add the function event to the queue */
-    template <typename T> inline void add(const T function, long delay, Unit unit, bool repeat) {
+    inline void add(void (*function)(), const long delay, Unit unit, const bool repeat) {
       Task task;
       task._function = function;
       task._delay = delay;
@@ -65,19 +64,19 @@ class EventLoop {
        return event_loop;
     };
     /** Run the function */
-    template <typename T> inline void execute(const T function) {
+    inline void execute(void (*function)()) {
       add(function, 0, MILLIS, false);
     };
     /** Run the function with a delay */
-    template <typename T> inline void execute(const T function, long delay, Unit unit) {
+    inline void execute(void (*function)(), const long delay, const Unit unit) {
       add(function, delay, unit, false);
     };
     /** Repeat the function with a delay */
-    template <typename T> inline void repeat(const T function) {
+    inline void repeat(void (*function)()) {
       add(function, 1, MILLIS, true);
     };
     /** Repeat the function with a delay */
-    template <typename T> inline void repeat(const T function, long delay, Unit unit) {
+    inline void repeat(void (*function)(), const long delay, const Unit unit) {
       add(function, delay, unit, true);
     };
     /** Get the current size of the event */

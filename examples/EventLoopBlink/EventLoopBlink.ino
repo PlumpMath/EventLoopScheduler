@@ -18,10 +18,10 @@
 
 void setup() {
   // Turn on the LED every 2 secs
-  EventLoop::get().repeat<void()>([] () {
+  EventLoop::get().repeat([] () {
     digitalWrite(13, HIGH);
     // Turn off the LED off after 1 sec
-    EventLoop::get().execute<void()>([] () {
+    EventLoop::get().execute([] () {
       digitalWrite(13, LOW);
     }, 1, SECONDS);
   }, 2, SECONDS);
