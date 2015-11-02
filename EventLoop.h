@@ -43,7 +43,7 @@ class EventLoop {
         _created = millis();
       };
       /** Caculate the time to execute of there is a delay */
-      inline unsigned long caculate_time() {
+      inline unsigned long caculateTime() {
         return _created + _delay * _unit;
       };
     };
@@ -60,8 +60,8 @@ class EventLoop {
     };
   public:
     inline static EventLoop& get() {
-       static EventLoop event_loop;
-       return event_loop;
+       static EventLoop eventLoop;
+       return eventLoop;
     };
     /** Run the function */
     inline void execute(void (*function)()) {
@@ -89,7 +89,7 @@ class EventLoop {
         unsigned long current = millis();
         Task task = _queue.pop();
         // Has enuf time passed to execute the function
-        if (current >= task.caculate_time()) {
+        if (current >= task.caculateTime()) {
           // Execute the function
           task._function();
           // We want to repeat, recreate event
