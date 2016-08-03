@@ -43,7 +43,6 @@ class EventLoop {
       };
     };
     LinkedQueue<Task> _queue;
-    inline EventLoop() {}; // Disable constructing of the EventLoop
     /** Add the function event to the queue */
     inline void add(void (*function)(), const long delay, Unit unit, const bool repeat) {
       add(function, delay * unit, repeat);
@@ -57,10 +56,6 @@ class EventLoop {
       _queue.push(task);
     };
   public:
-    inline static EventLoop& get() {
-       static EventLoop eventLoop;
-       return eventLoop;
-    };
     /** Run the function */
     inline void execute(void (*function)()) {
       add(function, 0, MILLIS, false);

@@ -16,15 +16,17 @@
  */
 #include <EventLoop.h>
 
-const int LED = 13;
+#define LED 13
+
+EventLoop scheduler;
 
 void setup() {
   pinMode(LED, OUTPUT);
   // Turn on the LED every 2 secs
-  EventLoop::get().repeat([] () {
+  scheduler.repeat([] () {
     digitalWrite(LED, HIGH);
     // Turn off the LED off after 1 sec
-    EventLoop::get().execute([] () {
+    scheduler.execute([] () {
       digitalWrite(LED, LOW);
     }, 1, SECONDS);
   }, 2, SECONDS);
@@ -32,5 +34,5 @@ void setup() {
 
 void loop() {
   // Must be added to the loop function
-  EventLoop::get().process();
+  scheduler.process();
 }
