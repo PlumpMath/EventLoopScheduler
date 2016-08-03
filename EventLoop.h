@@ -35,26 +35,24 @@ class EventLoop {
     struct Task {
       void (*_function)(); // The function to be ran
       bool _repeat; // Should this event be looped
-      unsigned long _created; // the time in millis when the event was created
-      unsigned long _delay; // the dealy what will be muliplied with Unit
-      Unit _unit; // The unit of time to schedule the event with
+      unsigned long _caculate_time; // the caculated to eslapsed
+      unsigned long _delay; // the delay what will be muliplied with Unit
       /** Grab the current time of when the event was created */
       inline Task() {
-        _created = millis();
-      };
-      /** Caculate the time to execute of there is a delay */
-      inline unsigned long caculate_time() {
-        return _created + _delay * _unit;
+        _caculate_time = millis();
       };
     };
     LinkedQueue<Task> _queue;
     inline EventLoop() {}; // Disable constructing of the EventLoop
     /** Add the function event to the queue */
     inline void add(void (*function)(), const long delay, Unit unit, const bool repeat) {
+      add(function, delay * unit, repeat);
+    };
+    /** Add the function event to the queue */
+    inline void add(void (*function)(), const long delay, const bool repeat) {
       Task task;
       task._function = function;
-      task._delay = delay;
-      task._unit = unit;
+      task._caculate_time += task._delay = delay;
       task._repeat = repeat;
       _queue.push(task);
     };
@@ -86,16 +84,15 @@ class EventLoop {
     /** Process the event */
     inline void process() {
       if (_queue.size() > 0) {
-        unsigned long current = millis();
         Task task = _queue.pop();
         // Has enuf time passed to execute the function
-        if (current >= task.caculate_time()) {
-          // Execute the function
-          task._function();
+        if (millis() >= task._caculate_time) {
           // We want to repeat, recreate event
           if (task._repeat) {
-            add(task._function, task._delay, task._unit, true);
+            add(task._function, task._delay, true);
           }
+          // Execute the function
+          task._function();
         } else { // Time has not eslapsed yet add to queue
           _queue.push(task);
         }
