@@ -2,8 +2,7 @@
 
 A scheduler system that uses an event loop to schedule tasks,
 to be ran in a non blocking system. It uses native functions and lambdas
-to create tasks. The key part of making it simple is the use of singleton.
-Anything related to the `EventLoop` can be used from `EventLoop::get()`.
+to create tasks.
 
 ## Usage
 
