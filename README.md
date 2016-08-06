@@ -10,11 +10,12 @@ Anything related to the `EventLoop` can be used from `EventLoop::get()`.
 Examples can be found in `examples` folder.
 
 ```c++
+EventLoop scheduler;
 // Turn on the LED every 2 secs
-EventLoop::get().repeat([] () {
+scheduler.repeat([] () {
   digitalWrite(13, HIGH);
   // Turn off the LED off after 1 sec
-  EventLoop::get().execute([] () {
+  scheduler.execute([] () {
     digitalWrite(13, LOW);
   }, 1, SECONDS);
 }, 2, SECONDS);
@@ -23,5 +24,5 @@ EventLoop::get().repeat([] () {
 Must be added to the loop function
 
 ```c++
-EventLoop::get().process();
+scheduler.process();
 ```
